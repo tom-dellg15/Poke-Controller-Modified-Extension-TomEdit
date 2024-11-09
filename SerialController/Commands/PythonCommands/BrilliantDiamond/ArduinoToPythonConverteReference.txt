@@ -1,0 +1,53 @@
+#include <NintendoSwitchControlLibrary.h>
+    ↓
+ImageProcPythonCommandTrim
+
+【Arduino】
+    pushButton(Button::HOME);               // HOMEボタンを入力する
+    pushButton(Button::A, 500);             // Aボタンを入力後、0.5秒待機する
+    pushButton(Button::B, 3000, 10);        // 3秒おきにBボタンを入力する、それを10回繰り返す
+    ↓
+【Python】
+    self.press(Button.HOME)                 # HOMEボタンを入力する
+    self.press(Button.A, 0.1, 0.5)          # Aボタンを0.1秒押して入力後、0.5秒待機する（2つ目は押下時間で指定なしだとデフォルト0.1秒）
+        ＝
+    self.press(Button.A, wait=0.5)      
+    self.pressRep(Button.B, 10, interval=3) # Bボタンを3秒ごとに10回押下する
+
+【Arduino】
+    スティックの座標は、128 を基点として 0〜255 の値を指定します。
+    0・128・255 の 3 つの値は Stick で定義されているため、置き換えて使用することもできます
+    （0 = MIN, NEUTRAL = 128, MAX = 255）
+    また、引数にボタンを渡すことでボタンを連打しながらスティックを傾ける操作を行うことができます。
+    tiltLeftStick(0, 128, 5000);                                // 左スティックを左に5秒間倒す
+    tiltLeftStick(Stick::NEUTRAL, Stick::MAX, 15000);           // 左スティックを下に15秒間倒す
+    tiltLeftStick(Stick::NEUTRAL, Stick::MIN, 8000, Button::A); // Aボタンを連打しながら、左スティックを上に8秒間倒す
+【Python】
+    self.press(Direction.LEFT, duration=5)                      # 左スティックを左に5秒間倒す
+    self.press(Direction.DOWN, duration=15)                     # 左スティックを左に15秒間倒す
+    self.press([Button.A, Direction(Stick.LEFT, 120), Direction(Stick.RIGHT, -30)], 5, 1)
+    # Aボタンを押しながら左スティックを120°, 右スティックを-30°(=330°)の方向に5秒間倒し, その後1秒間何もしない
+
+【Arduino】
+【Python】
+
+【Arduino】
+【Python】
+
+【Arduino】
+【Python】
+
+【Arduino】
+【Python】
+
+【Arduino】
+【Python】
+
+【Arduino】
+【Python】
+
+【Arduino】
+【Python】
+
+【Arduino】
+【Python】

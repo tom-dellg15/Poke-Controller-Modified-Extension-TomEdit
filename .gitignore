@@ -11,6 +11,7 @@
 *.exe
 *.json
 *.bat
+*.lnk
 !ExecutePokeConModified-Extension.bat
 .idea/
 SerialController/Captures/
@@ -20,11 +21,11 @@ SerialController/profiles/
 SerialController/Controller_Log/
 SerialController/log/
 SerialController/settings.poke
-SerialController/Commands/PythonCommands/*
-!SerialController/Commands/PythonCommands/Samples/
-!SerialController/Commands/PythonCommands/ImageProcessingOnly/
+!SerialController/Commands/PythonCommands/*
+SerialController/Commands/PythonCommands/Samples/
+SerialController/Commands/PythonCommands/ImageProcessingOnly/
 SerialController/Commands/PythonCommands/ImageProcessingOnly/*
-!SerialController/Commands/PythonCommands/ImageProcessingOnly/Samples/
+SerialController/Commands/PythonCommands/ImageProcessingOnly/Samples/
 SerialController/profiles/default/line_token.ini
 
 # Byte-compiled / optimized / DLL files
