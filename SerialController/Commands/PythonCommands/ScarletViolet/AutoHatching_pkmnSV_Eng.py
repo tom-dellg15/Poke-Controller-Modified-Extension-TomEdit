@@ -228,9 +228,9 @@ class AutoHatching_pkmnSV(SV_util_box_Eng,SV_util_picnic_Eng,util_Switch_Poke):
                 # <6>レポートを書く
                 print('report') 
                 # LINE送信   
-                if self.use_LINEnotice:
-                    #self.LINE_image('[Eng]report')    # LINE通知不要なら削除 
-                    self.LINE_image("[Eng]*** 色違い発見：" + str(self.shiny_total) + "/" + str(self.shiny_max) + " ***") # LINE通知
+                # if self.use_LINEnotice:
+                    # self.LINE_image('[Eng]report')    # LINE通知不要なら削除 
+                    # self.LINE_image("[Eng]*** 色違い発見：" + str(self.shiny_total) + "/" + str(self.shiny_max) + " ***") # LINE通知
                 self.report()
             # <7>リセットする
             else:
