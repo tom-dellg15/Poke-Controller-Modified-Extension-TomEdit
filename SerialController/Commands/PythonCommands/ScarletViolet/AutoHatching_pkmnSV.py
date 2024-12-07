@@ -1,5 +1,8 @@
 import time
 import datetime
+import tkinter as tk
+import os
+import inspect
 
 from .SV_util_box import SV_util_box
 from .SV_util_picnic import SV_util_picnic
@@ -29,7 +32,8 @@ class AutoHatching_pkmnSV(SV_util_box,SV_util_picnic,util_Switch_Poke):
         self.mode = 1           
         # その他設定値
         self.egg_max = 30                       # ピクニックタマゴ取得数を指定するための変数
-        self.shiny_max = 3                      # 色違い取得最大数を指定するための変数  色違い取得後にレポートを書かないようにしたい場合は1にします
+        self.shiny_max_default = 1              # 色違い取得最大数を指定するための変数 色違い取得後にレポートを書かないようにしたい場合は1にします
+        self.shiny_max = 0                      # 色違い取得最大数を指定するための変数 txtファイルor画面入力した値を保持する
         # 通知設定
         self.use_LINEnotice = True              # LINE通知を使用する場合の変数  使用しないならFalseにしないとエラーになります True
         self.debug_img_display = True           # debug用 True=エラー時の画像をLINEに送信（use_LINEnoticeがFalseだと、TrueにしてもFalseとして処理されます）
@@ -46,6 +50,8 @@ class AutoHatching_pkmnSV(SV_util_box,SV_util_picnic,util_Switch_Poke):
         #TOM_COMMENT 特定ポケモン用のフラグを追加
         #FIXME 成功したらEng版の方にも反映
         self.tokupokeflag = True                # おそらくだが、メテノ（紫）やコオリッポなど特定ポケモンは手持ちにいるとタマゴ判定されやすいので、判定条件に閾値を設けるかのフラグを設定する
+        # 作業中の親ポケモン
+        self.pokemon_parent = "デフォルト"
 
     def do(self):   
         '''
@@ -94,28 +100,10 @@ class AutoHatching_pkmnSV(SV_util_box,SV_util_picnic,util_Switch_Poke):
         print("自動タマゴ孵化(SV)_v3.5")
         print("Copyright(c) 2023 mikan kato")
         print("---------------------------------------")
-        ############################################
-        import tkinter as tk
-
-        def get_entry():
-            self.shiny_max = int(entry.get())
-            root.destroy()
-
-        root = tk.Tk()
-        root.title('Entry')
-        root.geometry( '300x300' + '+1280+540' )
-
-        entry = tk.Entry(root, width=20)
-        # 初期値を入れておく
-        entry.insert(0, self.shiny_max)
-        entry.pack(pady=10)
-
-        button = tk.Button(root, text='反映', command=get_entry)
-        button.pack()
-
-        root.mainloop()
-        ############################################
-        print("▼" + str(self.shiny_max) + "匹の色違いを取得します▼")
+        # tkinter処理
+        self.tkinterProcess()
+        # 初回メッセージ
+        print("▼" + self.pokemon_parent + ":" + str(self.shiny_max) + "匹の色違いを取得します▼")
         if not self.use_LINEnotice:
             self.debug_img_display = False           # debug用 True=エラー時の画像をLINEに送信
         # 以下繰り返し
@@ -211,6 +199,8 @@ class AutoHatching_pkmnSV(SV_util_box,SV_util_picnic,util_Switch_Poke):
                         # 色違い/ステータスを確認する
                         print('release box (mode:2,3)')   
                         self.shiny_total += self.checkBox(release_flag=True,statuscheck_flag=True)
+                    # ここでログ出力
+                    self.print_t("*** " + self.pokemon_parent  + " 色違い発見：" + str(self.shiny_total) + "/" + str(self.shiny_max) + " ***")
                 # 色違い数が指定数以上であれば終了
                 if self.shiny_total >= self.shiny_max: 
                     print('PGM end')                        
@@ -240,6 +230,7 @@ class AutoHatching_pkmnSV(SV_util_box,SV_util_picnic,util_Switch_Poke):
         self.press(Button.B, wait=3)
         return eggs
 
+
     def countEggsInParty(self):
         """
         手持ちのタマゴ数を確認する
@@ -258,6 +249,7 @@ class AutoHatching_pkmnSV(SV_util_box,SV_util_picnic,util_Switch_Poke):
                 eggs=2
         print('eggs: ',eggs)
         return eggs
+
 
     def resetPositionZerogate(self):
         """
@@ -425,6 +417,7 @@ class AutoHatching_pkmnSV(SV_util_box,SV_util_picnic,util_Switch_Poke):
             self.wait(0.3)
         return True
 
+
     def pullEggs(self):
         '''
         タマゴを手持ちに移動
@@ -517,7 +510,8 @@ class AutoHatching_pkmnSV(SV_util_box,SV_util_picnic,util_Switch_Poke):
                     continue    
             eggs = self.checkPartyEggs()   
             return eggs        
-        
+
+
     def putHatchedEggs(self):
         '''
         孵化したポケモンをBOXに移動
@@ -636,3 +630,60 @@ class AutoHatching_pkmnSV(SV_util_box,SV_util_picnic,util_Switch_Poke):
         # close
         self.closeBox()
         return shiny_count
+
+    def tkinterProcess(self):
+        print(inspect.currentframe().f_code.co_name + "開始")
+
+        # txt読み込み
+        pathword1 = os.getcwd()
+        pathword2 = "profiles"
+        pathword3 = self.profilename
+        filename = "shiny_max_history.txt"
+        path = os.path.join( pathword1, pathword2, pathword3, filename)
+        try:
+            f = open(path, "r")
+            line = f.readline().rstrip()
+            # 色違い取得最大数
+            self.shiny_max = int(line)
+            f.close()
+        except Exception as e:
+            print(e)
+            print("決定ボタン押したら「" + path + "」を新規作成します")
+
+        # エリア設定
+        root = tk.Tk()
+        root.title('Entry')
+        root.geometry( '300x300' + '+1280+540' )
+
+        # 入力ボックス：孵化するポケモン名
+        entryPokeName = tk.Entry(root, width=20)
+        # 初期値を入れておく
+        entryPokeName.insert(0, "孵化するポケモン名をココに入力")
+        entryPokeName.pack(pady=10)
+
+        # 入力ボックス：色違い取得最大数
+        entryShinyMax = tk.Entry(root, width=20)
+        # 初期値を入れておく
+        if self.shiny_max == 0 :
+            self.shiny_max = self.shiny_max_default
+        entryShinyMax.insert(0, self.shiny_max)
+        entryShinyMax.pack(pady=10)
+
+        # ボタン処理
+        def get_entry():
+            # 色違い取得最大数
+            self.shiny_max = int(entryShinyMax.get())
+            # txt書込み
+            with open(path, "w") as f:
+                f.write(str(self.shiny_max))
+                # self.print_t("書込み完了：" + str(self.shiny_max))
+            self.pokemon_parent = entryPokeName.get()
+            root.destroy()
+
+        # ボタン：決定
+        button = tk.Button(root, text='決定', command=get_entry)
+        button.pack()
+
+        root.mainloop()
+        
+        print(inspect.currentframe().f_code.co_name + "終了")

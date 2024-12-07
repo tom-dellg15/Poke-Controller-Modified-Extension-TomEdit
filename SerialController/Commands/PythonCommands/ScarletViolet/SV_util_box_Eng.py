@@ -375,7 +375,7 @@ class SV_util_box_Eng(SV_util_Eng):
         # before box
         self.pressRep(Button.L, count_move_box, interval=0.1)
         #Debug用
-        print("▼putNextBox成功▼")
+        # print("▼putNextBox成功▼")
         return True
 
     """
@@ -516,7 +516,7 @@ class SV_util_box_Eng(SV_util_Eng):
                 if pkmnmove_flag:
                     self.putNextBox()  # 次のボックスにポケモンを移動する
                     #Debug用
-                    print("▼if flag[0]:通過▼")
+                    # print("▼if flag[0]:通過▼")
                     continue
             elif flag[1]:
                 # statusmatch
