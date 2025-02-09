@@ -627,7 +627,7 @@ class AutoHatching_pkmnSV(SV_util_box_Eng,SV_util_picnic_Eng,util_Switch_Poke):
         # box move
         self.moveBox('SV_AutoHatching_Eng\inbox_title_egg.png')
         # check
-        shiny_count = self.checkBoxShinyOrStatus(release_flag=release_flag,statuscheck_flag=statuscheck_flag,pkmnmove_flag=True)
+        shiny_count = self.checkBoxShinyOrStatus(self.pokemon_parent,release_flag=release_flag,statuscheck_flag=statuscheck_flag,pkmnmove_flag=True)
         print('*** shiny total *** ',self.shiny_total + shiny_count,'/',self.shiny_max)       
         # close
         self.closeBox()

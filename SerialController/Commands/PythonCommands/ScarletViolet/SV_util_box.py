@@ -462,7 +462,7 @@ class SV_util_box(SV_util):
     """
 
     def checkBoxShinyOrStatus(
-        self, release_flag=False, statuscheck_flag=False, pkmnmove_flag=False
+        self, pokemon_parent,release_flag=False, statuscheck_flag=False, pkmnmove_flag=False
     ):
         """
         色違い・良個体値のポケモンをチェック（戻り値あり）
@@ -504,10 +504,10 @@ class SV_util_box(SV_util):
             if flag[0]:
                 # shiny
                 shiny_count += 1
-                print("*** ★★★shiny★★★ ***")
+                print( "*** "+ pokemon_parent + " ★★★shiny★★★ ***")
                 # send LINE
                 if self.use_LINEnotice:
-                    self.LINE_image("*** shiny ***")  # LINE通知不要なら削除
+                    self.LINE_image("*** " + pokemon_parent + " shiny ***")  # LINE通知不要なら削除
                 if pkmnmove_flag:
                     self.putNextBox()  # 次のボックスにポケモンを移動する
                     continue
